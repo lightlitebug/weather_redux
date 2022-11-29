@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:recase/recase.dart';
 import 'package:redux/redux.dart';
 
+import '../constants/constants.dart';
 import '../models/custom_error.dart';
 import '../models/weather.dart';
 import '../redux/app_state.dart';
@@ -55,6 +57,28 @@ class _HomePageState extends State<HomePage> {
           body: _showWeather(vm.weather, vm.weatherStatus),
         );
       },
+    );
+  }
+
+  String showTemperature(double temperature) {
+    return '${temperature.toStringAsFixed(2)}℃';
+  }
+
+  Widget showIcon(String icon) {
+    return FadeInImage.assetNetwork(
+      placeholder: 'assets/images/loading.gif',
+      image: 'https://$kIconHost/img/wn/$icon@4x.png',
+      width: 96,
+      height: 96,
+    );
+  }
+
+  Widget formatText(String description) {
+    final formattedString = description.titleCase;
+    return Text(
+      formattedString,
+      style: const TextStyle(fontSize: 24.0),
+      textAlign: TextAlign.center,
     );
   }
 
@@ -117,7 +141,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${weather.temp}',
+              showTemperature(weather.temp),
               style: const TextStyle(
                 fontSize: 30.0,
                 fontWeight: FontWeight.bold,
@@ -127,16 +151,29 @@ class _HomePageState extends State<HomePage> {
             Column(
               children: [
                 Text(
-                  '${weather.tempMax}',
+                  showTemperature(weather.tempMax),
                   style: const TextStyle(fontSize: 16.0),
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  '${weather.tempMin}',
+                  showTemperature(weather.tempMin),
                   style: const TextStyle(fontSize: 16.0),
                 ),
               ],
             ),
+          ],
+        ),
+        const SizedBox(height: 40.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Spacer(),
+            showIcon(weather.icon),
+            Expanded(
+              flex: 3,
+              child: formatText(weather.description),
+            ),
+            const Spacer(),
           ],
         ),
       ],
