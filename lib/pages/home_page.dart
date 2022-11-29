@@ -8,6 +8,7 @@ import '../constants/constants.dart';
 import '../models/custom_error.dart';
 import '../models/weather.dart';
 import '../redux/app_state.dart';
+import '../redux/temp_settings/temp_settings_state.dart';
 import '../redux/weather/weather_action.dart';
 import '../redux/weather/weather_state.dart';
 import '../widgets/error_dialog.dart';
@@ -66,13 +67,16 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          body: _showWeather(vm.weather, vm.weatherStatus),
+          body: _showWeather(vm.weather, vm.weatherStatus, vm.tempUnit),
         );
       },
     );
   }
 
-  String showTemperature(double temperature) {
+  String showTemperature(double temperature, TempUnit tempUnit) {
+    if (tempUnit == TempUnit.fahrenheit) {
+      return '${((temperature * 9 / 5) + 32).toStringAsFixed(2)}℉';
+    }
     return '${temperature.toStringAsFixed(2)}℃';
   }
 
@@ -97,6 +101,7 @@ class _HomePageState extends State<HomePage> {
   Widget _showWeather(
     Weather weather,
     WeatherStatus weatherStatus,
+    TempUnit tempUnit,
   ) {
     if (weatherStatus == WeatherStatus.initial) {
       return const Center(
@@ -153,7 +158,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              showTemperature(weather.temp),
+              showTemperature(weather.temp, tempUnit),
               style: const TextStyle(
                 fontSize: 30.0,
                 fontWeight: FontWeight.bold,
@@ -163,12 +168,12 @@ class _HomePageState extends State<HomePage> {
             Column(
               children: [
                 Text(
-                  showTemperature(weather.tempMax),
+                  showTemperature(weather.tempMax, tempUnit),
                   style: const TextStyle(fontSize: 16.0),
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  showTemperature(weather.tempMin),
+                  showTemperature(weather.tempMin, tempUnit),
                   style: const TextStyle(fontSize: 16.0),
                 ),
               ],
@@ -198,16 +203,23 @@ class _ViewModel extends Equatable {
   final Weather weather;
   final WeatherStatus weatherStatus;
   final CustomError error;
+  final TempUnit tempUnit;
   const _ViewModel({
     required this.fetchWeather,
     required this.weather,
     required this.weatherStatus,
     required this.error,
+    required this.tempUnit,
   });
 
   @override
   List<Object> get props {
-    return [weather, weatherStatus, error];
+    return [
+      weather,
+      weatherStatus,
+      error,
+      tempUnit,
+    ];
   }
 
   static fromStore(Store<AppState> store) {
@@ -215,6 +227,7 @@ class _ViewModel extends Equatable {
       weather: store.state.weatherState.weather,
       weatherStatus: store.state.weatherState.weatherStatus,
       error: store.state.weatherState.error,
+      tempUnit: store.state.tempSettingsState.tempUnit,
       fetchWeather: (String city) =>
           store.dispatch(fetchWeatherAndDispatch(city)),
     );
