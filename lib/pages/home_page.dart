@@ -52,11 +52,45 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          body: const Center(
-            child: Text('Home'),
-          ),
+          body: _showWeather(vm.weather, vm.weatherStatus),
         );
       },
+    );
+  }
+
+  Widget _showWeather(
+    Weather weather,
+    WeatherStatus weatherStatus,
+  ) {
+    if (weatherStatus == WeatherStatus.initial) {
+      return const Center(
+        child: Text(
+          'Select a city',
+          style: TextStyle(fontSize: 20.0),
+        ),
+      );
+    }
+
+    if (weatherStatus == WeatherStatus.loading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (weatherStatus == WeatherStatus.failure && weather.name == '') {
+      return const Center(
+        child: Text(
+          'Select a city',
+          style: TextStyle(fontSize: 20.0),
+        ),
+      );
+    }
+
+    return Center(
+      child: Text(
+        weather.name,
+        style: const TextStyle(fontSize: 18.0),
+      ),
     );
   }
 }
