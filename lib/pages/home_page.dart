@@ -86,11 +86,60 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    return Center(
-      child: Text(
-        weather.name,
-        style: const TextStyle(fontSize: 18.0),
-      ),
+    return ListView(
+      children: [
+        SizedBox(height: MediaQuery.of(context).size.height / 6),
+        Text(
+          weather.name,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 40.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              TimeOfDay.fromDateTime(weather.lastUpdated).format(context),
+              style: const TextStyle(fontSize: 18.0),
+            ),
+            const SizedBox(width: 10.0),
+            Text(
+              '(${weather.country})',
+              style: const TextStyle(fontSize: 18.0),
+            ),
+          ],
+        ),
+        const SizedBox(height: 60.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '${weather.temp}',
+              style: const TextStyle(
+                fontSize: 30.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 20.0),
+            Column(
+              children: [
+                Text(
+                  '${weather.tempMax}',
+                  style: const TextStyle(fontSize: 16.0),
+                ),
+                const SizedBox(height: 10.0),
+                Text(
+                  '${weather.tempMin}',
+                  style: const TextStyle(fontSize: 16.0),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
