@@ -12,6 +12,7 @@ import '../redux/weather/weather_action.dart';
 import '../redux/weather/weather_state.dart';
 import '../widgets/error_dialog.dart';
 import 'search_page.dart';
+import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -50,6 +51,17 @@ class _HomePageState extends State<HomePage> {
                   if (_city != null) {
                     vm.fetchWeather(_city!);
                   }
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return const SettingsPage();
+                    }),
+                  );
                 },
               ),
             ],
